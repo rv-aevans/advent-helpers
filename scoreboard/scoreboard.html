@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MTech Advent of Code Leaderboard</title>
+    <style>
+        body {
+            font-family: "Lucida Console", "Courier New", monospace;
+            font-size: 1.2rem;
+            background-color: #d30099;
+            padding: 15px;
+        }
+
+        .main {
+            background-color: beige;
+            border: #000;
+            border-style: solid;
+            border-radius: 25% 10px;
+            padding-bottom: 55px;
+        }
+
+        .title {
+            margin: auto;
+            text-align: center;
+            width: 50%;
+        }
+
+        .solid {
+            border-top: 3px solid #000;
+            width: 80%;
+        }
+
+        .table {
+            margin: 4% auto;
+            width: 80%;
+            display: flex-column;
+            flex-grow: 0;
+            border: 3px solid black;
+            border-radius: 25% 10px;
+            padding: 7%;
+            text-align: left;
+        }
+
+        .table-header {
+            width: 100%;
+            display: flex;
+            flex-flow: row;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .header-rank {
+            flex-wrap: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            display: flex;
+            flex-basis: 8%;
+        }
+
+        .header-stars {
+            display: flex;
+            flex-basis: 8%;
+        }
+
+        .header-name {
+            flex-wrap: nowrap;
+            overflow: hidden;
+            display: flex;
+            flex-basis: 40%;
+            max-height: min-content;
+        }
+
+        .header-role {
+            display: flex;
+            flex-basis: 12%;
+        }
+
+        .header-something {
+            display: flex;
+            flex-basis: 12%;
+        }
+
+        .header-something-else {
+            display: flex;
+            flex-basis: 12%;
+        }
+
+        .flex-table-row {
+            display: flex;
+            flex-direction: row;
+            padding: 10px;
+            flex-wrap: nowrap;
+            text-overflow: hidden;
+            overflow: hidden;
+        }
+
+        .user-rank {
+            display: flex;
+            flex-basis: 8%;
+            max-width: 8%;
+            flex-wrap: nowrap;
+            text-overflow: hidden;
+            overflow: hidden;
+        }
+
+        .user-stars {
+            display: flex;
+            flex-basis: 8%;
+            max-width: 8%;
+            flex-wrap: nowrap;
+            text-overflow: hidden;
+            overflow: hidden;
+        }
+
+        .user-name {
+            display: flex;
+            flex-basis: 40%;
+            max-width: 40%;
+            flex-wrap: nowrap;
+            text-overflow:inherit;
+            overflow: hidden;
+        }
+
+        .user-role {
+            display: flex;
+            flex-basis: 12%;
+            max-width: 12%;
+            flex-wrap: nowrap;
+            text-overflow: hidden;
+            overflow: hidden;
+        }
+
+        .user-something {
+            display: flex;
+            flex-basis: 12%;
+            max-width: 12%;
+            flex-wrap: nowrap;
+            text-overflow: hidden;
+            overflow: hidden;
+        }
+
+        .user-something-else {
+            display: flex;
+            flex-basis: 12%;
+            max-width: 12%;
+            flex-wrap: nowrap;
+            text-overflow: hidden;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+        const fetchScores = async () => {
+            await fetch('https://dev.mtechapis.com/advent-of-code/scores')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('orig: ', data);
+                    let users = [];
+                    let noStars = [];
+                    data.map(e => {
+                        e.stars ?
+                            users.push({
+                                rank: e.rank,
+                                stars: e.stars,
+                                name: e.display_name,
+                                role: "dev",
+                                something: e.something,
+                                somethingElse: e.somethingElse
+                            }) :
+                            noStars.push({
+                                rank: e.rank,
+                                stars: 0,
+                                name: e.display_name,
+                                role: "dev",
+                                something: e.something,
+                                somethingElse: e.somethingElse
+                            })
+                    })
+                    users.sort((a, b) => (a.stars < b.stars) ? 1 : -1).push(...noStars);
+                    displayUsers(users);
+                });
+        }
+
+        function displayUsers(users) {
+            console.log('users: ', users)
+            users.map((e, i) => {
+                document.getElementById('user-table').innerHTML += `
+                        <div class="flex-table-row">
+                            <div class="user-rank" id=rank-${i}> ${i + 1} </div>
+                            <div class="user-stars"> ${e.stars} </div>
+                            <div class="user-name"> ${e.name} </div>
+                            <div class="user-role"> ${e.role} </div>
+                            <div class="user-something"> ${e.local_score} </div>
+                            <div class="user-something-else"> ${e.local_score} </div>
+                        </div>
+                        `;
+            });
+        }
+    </script>
+</head>
+
+<body onload="fetchScores()">
+    <div class="main">
+        <div class="title">
+            <h1>MTech Advent of Code Leaderboard</h1>
+        </div>
+        <div>
+            <div class="table" id="user-table">
+                <div class="table-header">
+                    <div class="header-rank">Rank</div>
+                    <div class="header-stars">Stars</div>
+                    <div class="header-name">Name</div>
+                    <div class="header-role">Role</div>
+                    <div class="header-something">Something Else</div>
+                    <div class="header-something-else">Something Else</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </div>
+    </div>
+</body>
+
+</html>
